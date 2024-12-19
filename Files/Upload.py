@@ -1,4 +1,4 @@
-from streamlit import button, dialog, file_uploader, rerun, session_state, write
+from streamlit import button, dialog, file_uploader, info, rerun, session_state, write
 
 @dialog("Upload a File 📂")
 def file_upload_dialog():
@@ -11,8 +11,9 @@ def file_upload_dialog():
         type=["csv", "flashquiz"],
         key="file_upload_dialog",
     )
-    if button("Submit"):
-        if uploaded_file is not None:
-            # Store the uploaded file in session state
-            session_state.uploaded_file_data = uploaded_file
-            rerun()  # Trigger a rerun to update the app
+    if button("Submit") and uploaded_file is not None:
+        session_state.uploaded_file_data = uploaded_file
+        session_state.success_value = True
+        rerun()  # Trigger a rerun to update the app
+    else:
+        info("Please upload a file and click 'Submit'.")
