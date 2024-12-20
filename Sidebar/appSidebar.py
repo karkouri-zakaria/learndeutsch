@@ -1,5 +1,5 @@
 from pandas import DataFrame, concat
-from streamlit import audio, button, selectbox, sidebar, success, text_input, warning, write
+from streamlit import audio, button, download_button, selectbox, sidebar, success, text_input, warning, write
 
 from Flashcards.detect_spelling_errors import detect_spelling_errors
 from Flashcards.get_noun_articles import get_noun_articles
@@ -25,7 +25,7 @@ class AppSidebar:
     
     def get_user_input(self):
         """Get user input for text area and play audio if provided."""
-        self.user_input = sidebar.text_area("", "", placeholder="Write something to read ...", key="user_input")
+        self.user_input = sidebar.text_area("---", "", placeholder="Write something to read ...", key="user_input")
 
         if self.user_input:
             with sidebar.expander("Reading", expanded=True, icon="🗣️"):
@@ -72,7 +72,7 @@ class AppSidebar:
         """Display a download button for the flashcards."""
         with sidebar.expander("Download Flashcards", expanded=False, icon="📥"):
             updated_csv = flashcards_df.to_csv(index=False)
-            sidebar.download_button(
+            download_button(
                 label="Download CSV",
                 data=updated_csv,
                 file_name="flashcards.csv",
