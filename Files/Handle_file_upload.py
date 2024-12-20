@@ -3,10 +3,9 @@ from streamlit import dialog, error, info, session_state, success
 from Flashcards.flashquiz_csv_table import flashquiz_csv_table
 from Flashcards.flashquiz_to_csv import flashquiz_to_csv
 
-def Handle_file_upload(uploaded_file, success_value):
+def Handle_file_upload(flashcards_df, uploaded_file, success_value):
     """Handle file upload and processing."""
     csv_data, csv_file_like = None, None
-    flashcards_df = None
 
     if uploaded_file:
         file_extension = uploaded_file.name.split(".")[-1].lower()
@@ -48,4 +47,4 @@ def Handle_file_upload(uploaded_file, success_value):
 
 @dialog("Upload a File 📂")
 def show_dialog():
-    success("CSV file uploaded successfully!", icon="✅")
+    success("File uploaded successfully!", icon="✅")

@@ -1,9 +1,10 @@
 from streamlit import columns, fragment, status, write, button, session_state
 from Flashcards.display_flashcard import display_flashcard
+from Audio.generate_audio import generate_audio_files
 
-@fragment
 def display_flashcards(flashcards_df, sidebar_manager):
     """Display the flashcards in the app."""
+    generate_audio_files(flashcards_df)  # Ensure all audio is pre-generated
     write("### Extracted Flashcards")
     
     # Pagination logic
@@ -11,7 +12,7 @@ def display_flashcards(flashcards_df, sidebar_manager):
         session_state.current_page = 0
 
     cards_per_page = 50
-    total_pages = (len(flashcards_df) - 1) // cards_per_page + 1
+    total_pages = (len(flashcards_df) + cards_per_page - 1) // cards_per_page
 
     # Display page header
     col1, col2, col3 = columns(3 ,gap="large")
@@ -21,13 +22,11 @@ def display_flashcards(flashcards_df, sidebar_manager):
 
     # Pagination controls
     with col1:
-        if session_state.current_page > 0:
-            if button("Previous"):
-                session_state.current_page -= 1
+        if session_state.current_page > 0 and button("Previous"):
+            session_state.current_page -= 1
     with col3:
-        if session_state.current_page < total_pages - 1:
-            if button("Next"):
-                session_state.current_page += 1
+        if session_state.current_page < total_pages - 1 and button("Next"):
+            session_state.current_page += 1
 
     # Display current page number
     col2.write(f"**Page {session_state.current_page + 1} of {total_pages}**")

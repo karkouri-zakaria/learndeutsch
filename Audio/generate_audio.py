@@ -1,17 +1,13 @@
 from hashlib import md5
 from os import makedirs, path
 from gtts import gTTS
-from streamlit import cache_data
+from streamlit import cache_data, session_state
 
 # Function to generate audio for the provided text
 @cache_data
 def generate_audio(text, lang="de", cache_dir="Audio_cache"):
     # Ensure the Audio_cache directory exists
-    try:
-        if not path.exists(cache_dir):
-            makedirs(cache_dir)
-    except OSError as e:
-        raise OSError(f"Failed to create Audio_cache directory: {cache_dir}. Please check permissions.") from e
+    makedirs(cache_dir, exist_ok=True)
 
     # Create a unique hash for the text to avoid re-generation
     audio_file = path.join(cache_dir, f"audio_{md5(text.encode()).hexdigest()}.mp3")
@@ -25,3 +21,14 @@ def generate_audio(text, lang="de", cache_dir="Audio_cache"):
             raise RuntimeError(f"Error generating audio: {e}") from e
 
     return audio_file
+
+@cache_data
+def generate_audio_files(flashcards_df, cache_dir="Audio_cache"):
+    """Generate audio files for all flashcards."""
+    if not session_state.get("audio_generated", False):
+        makedirs(cache_dir, exist_ok=True)
+
+        for _, flashcard in flashcards_df.iterrows():
+            flashcard["audio_path"] = generate_audio(flashcard["BackText"], cache_dir=cache_dir)
+
+        session_state.audio_generated = True
