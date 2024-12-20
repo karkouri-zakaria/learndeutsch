@@ -6,13 +6,10 @@ from streamlit import error
 
 def Flashquiz_viewer_table(_sidebar_manager: AppSidebar, flashcards_df: DataFrame):
 
-    # Add flashcard using Sidebar
-    flashcards_df = _sidebar_manager.add_flashcard(flashcards_df)
-
     if flashcards_df is not None:
         try:
             flashcards_df = process_flashcards(flashcards_df, _sidebar_manager)
-            _sidebar_manager.display_download_button(flashcards_df) 
             display_flashcards(flashcards_df, _sidebar_manager)
+            _sidebar_manager.display_download_button(flashcards_df) 
         except Exception as e:
             error(f"Error parsing the file: {e}", icon="🚫")

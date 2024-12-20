@@ -1,8 +1,8 @@
-from streamlit import audio, cache_data, container, popover, write
+from streamlit import audio, button, cache_data, columns, container, popover, rerun, session_state, sidebar, write
 from Audio.generate_audio import generate_audio
 from Flashcards.get_noun_articles import get_noun_articles
+import pandas as pd
 
-@cache_data
 def display_flashcard(flashcard):
     """Display a single flashcard with its audio."""
     with container(border=True):
@@ -15,9 +15,31 @@ def display_flashcard(flashcard):
                 # Open and play the generated audio file
                 with open(audio_file, "rb") as audio_data:
                     audio(audio_data, format="audio/mp3", autoplay=False)
-                    
+
             except Exception as e:
                 write(f"Error: {str(e)}")
             write(f"> {flashcard['BackText']}")
+
+            # Use the flashcard data as-is (no renaming)
+            flashcard_df = pd.DataFrame([flashcard])
+
+            col1, col2 = columns(2)
+
+            if col1.button("Edit", key=f"Edit_{flashcard['BackText']}", icon="✏️", use_container_width=True):
+                sidebar.data_editor(
+                    flashcard_df,
+                    column_config={
+                        "FrontText": "English",
+                        "BackText": "Deutsch",
+                    },
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            
+            if col2.button("Dlete", key=f"Delete_{flashcard['BackText']}", icon="🗑️", use_container_width=True):
+                session_state.flashcards_df.drop(flashcard_df.index, inplace=True)
+                rerun()
+
+            # Display articles and nouns
             for word, article in get_noun_articles(flashcard['BackText']):
                 write(f"{article} {word}")

@@ -1,4 +1,5 @@
-from streamlit import columns, fragment, status, write, button, session_state
+from pandas import DataFrame
+from streamlit import columns, expander, form, form_submit_button, fragment, sidebar, status, text_input, write, button, session_state
 from Flashcards.display_flashcard import display_flashcard
 from Audio.generate_audio import generate_audio_files
 
@@ -7,6 +8,10 @@ def display_flashcards(flashcards_df, sidebar_manager):
     generate_audio_files(flashcards_df)  # Ensure all audio is pre-generated
     write("### Extracted Flashcards")
     
+    # Sidebar to add a new flashcard
+    session_state.flashcards_df = sidebar_manager.add_flashcard(session_state.flashcards_df)
+    flashcards_df = session_state.flashcards_df
+
     # Pagination logic
     if "current_page" not in session_state:
         session_state.current_page = 0

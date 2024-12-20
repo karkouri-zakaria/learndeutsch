@@ -1,6 +1,7 @@
 from pandas import DataFrame, concat
-from streamlit import audio, button, download_button, selectbox, sidebar, success, text_input, warning, write
+from streamlit import audio, button, download_button, expander, form, form_submit_button, selectbox, session_state, sidebar, success, text_input, warning, write
 
+from Files.Handle_file_upload import show_dialog
 from Flashcards.detect_spelling_errors import detect_spelling_errors
 from Flashcards.get_noun_articles import get_noun_articles
 from Audio.generate_audio import generate_audio
@@ -44,30 +45,31 @@ class AppSidebar:
                         write(f"**{word}** -> {', '.join(suggestions)}")
 
     def add_flashcard(self, flashcards_df):
-        """Handle the addition of new flashcards."""
-        with sidebar.expander("Add New Flashcard", expanded=False, icon="➕"):
-            self.front_text = text_input("Enter Front Text", key="front_text")
-            self.back_text = text_input("Enter Back Text", key="back_text")
+        with sidebar.expander("Add a New Flashcard", icon="📝"):
+            with form(key="new_flashcard_form"):
+                # Input fields for the new flashcard
+                front_text = text_input("English")
+                back_text = text_input("Deutsch")
+                submit = form_submit_button("Add Flashcard", help="Submit the new flashcard", use_container_width=True, icon="➕")
 
-            if button("Add Flashcard", key="add_flashcard"):
-                if self.front_text and self.back_text:
-                    new_row = DataFrame({
-                        "FrontText": [self.front_text],
-                        "BackText": [self.back_text]
-                    })
+                # Check if the form was submitted
+                if submit:
+                    # Validate inputs
+                    if front_text and back_text:
+                        # Prepend the new flashcard to the DataFrame
+                        new_flashcard = DataFrame({"FrontText": [front_text], "BackText": [back_text]})
+                        flashcards_df = concat([new_flashcard, flashcards_df], ignore_index=True)
 
-                    # Add to DataFrame
-                    if flashcards_df is None:
-                        flashcards_df = new_row
+                        # Save updated DataFrame to session state
+                        session_state.flashcards_df = flashcards_df
+
+                        # Display confirmation
+                        success("✅ New flashcard added successfully!")
                     else:
-                        flashcards_df = concat([new_row, flashcards_df], ignore_index=True)
-
-                    success(f"Flashcard added: {self.front_text} -> {self.back_text}", icon="✅")
-                else:
-                    warning("Please fill both fields.", icon="⚠️")
-
+                        warning("⚠️ Please fill in both fields!")
+        
         return flashcards_df
-
+    
     def display_download_button(self, flashcards_df):
         """Display a download button for the flashcards."""
         with sidebar.expander("Download Flashcards", expanded=False, icon="📥"):
