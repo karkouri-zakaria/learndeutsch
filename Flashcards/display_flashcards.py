@@ -15,7 +15,7 @@ def display_flashcards(flashcards_df, sidebar_manager):
     if "current_page" not in session_state:
         session_state.current_page = 0
 
-    cards_per_page = 50
+    cards_per_page = 100
     total_pages = (len(flashcards_df) + cards_per_page - 1) // cards_per_page
 
     # Display page header
