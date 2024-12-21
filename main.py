@@ -12,7 +12,7 @@ def main():
     sidebar_manager = AppSidebar()
     sidebar.title("📚 Flashquiz By Zakaria")
     sidebar_manager.get_user_input()
-    
+
 
     # File uploaders section in the sidebar
     if "flashcards_df" not in session_state:
@@ -30,6 +30,10 @@ def main():
         
     # Add navigation in the sidebar using a toggle
     table = sidebar.toggle("Show Table", key="show_quiz_toggle", value=False)
+    
+    # Reverse the order of the DataFrame
+    session_state.flashcards_df = session_state.flashcards_df.iloc[::-1].reset_index(drop=True)
+
     if table:
         title("Tables")
         sidebar_manager.display_search_and_sort()
