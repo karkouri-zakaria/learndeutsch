@@ -37,8 +37,8 @@ def main():
 
     if table:
         title("Tables")
-        sidebar_manager.display_search_and_sort()
         Flashquiz_viewer_table(sidebar_manager, session_state.flashcards_df)
+        sidebar_manager.display_search_and_sort()
     else:
         title("Quiz")
         Quiz(session_state.flashcards_df)
