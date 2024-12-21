@@ -5,7 +5,6 @@ from Audio.generate_audio import generate_audio_files
 
 def display_flashcards(flashcards_df, sidebar_manager):
     """Display the flashcards in the app."""
-    generate_audio_files(flashcards_df)  # Ensure all audio is pre-generated
     write("### Extracted Flashcards")
     
     # Sidebar to add a new flashcard
@@ -40,6 +39,8 @@ def display_flashcards(flashcards_df, sidebar_manager):
     start_idx = session_state.current_page * cards_per_page
     end_idx = start_idx + cards_per_page
     page_flashcards_df = flashcards_df.iloc[start_idx:end_idx]
+    generate_audio_files(page_flashcards_df)  # Ensure all audio is pre-generated
+
 
     num_columns = 5
     rows = [
