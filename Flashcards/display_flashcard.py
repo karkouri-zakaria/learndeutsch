@@ -40,7 +40,3 @@ def display_flashcard(flashcard):
             if col2.button("Dlete", key=f"Delete_{flashcard['BackText']}", icon="🗑️", use_container_width=True):
                 session_state.flashcards_df.drop(flashcard_df.index, inplace=True)
                 rerun()
-
-            # Display articles and nouns
-            for word, article in get_noun_articles(flashcard['BackText']):
-                write(f"{article} {word}")
