@@ -22,7 +22,7 @@ def Quiz(flashcards_df):
 
             # Display the flashcard content
             with container(border=True):
-                metric(f"Flashcard", f"{current_index + 1} of {total_flashcards}", unsafe_allow_html=True)
+                metric("Flashcard", f"{current_index + 1} of {total_flashcards}")
                 
                 # Horizontal Buttons
                 left_button, right_button, _ = columns([1, 1, 10])  # Create space for buttons
