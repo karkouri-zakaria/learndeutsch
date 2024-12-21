@@ -9,7 +9,6 @@ def display_flashcards(flashcards_df, sidebar_manager):
     
     # Sidebar to add a new flashcard
     session_state.flashcards_df = sidebar_manager.add_flashcard(session_state.flashcards_df)
-    flashcards_df = session_state.flashcards_df
 
     # Pagination logic
     if "current_page" not in session_state:
