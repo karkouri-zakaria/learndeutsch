@@ -10,9 +10,9 @@ def process_flashcards(flashcards_df, sidebar_manager):
             )
         ]
 
-    if sidebar_manager.sort_option == "Front Text":
+    if sidebar_manager.sort_option == "English":
         flashcards_df = flashcards_df.sort_values(by="FrontText").reset_index(drop=True)
-    elif sidebar_manager.sort_option == "Back Text":
+    elif sidebar_manager.sort_option == "Deutsch":
         flashcards_df = flashcards_df.sort_values(by="BackText").reset_index(drop=True)
     elif sidebar_manager.sort_option == "Shuffle":
         flashcards_df = flashcards_df.sample(frac=1).reset_index(drop=True)
