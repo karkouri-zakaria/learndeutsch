@@ -3,6 +3,7 @@ from Audio.generate_audio import generate_audio
 from Flashcards.get_noun_articles import get_noun_articles
 import pandas as pd
 
+cache_data()
 def display_flashcard(flashcard):
     """Display a single flashcard with its audio."""
     with container(border=True):
