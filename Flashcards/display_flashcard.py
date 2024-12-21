@@ -4,7 +4,7 @@ from Flashcards.get_noun_articles import get_noun_articles
 import pandas as pd
 
 cache_data()
-def display_flashcard(flashcard):
+def display_flashcard(index, flashcard):
     """Display a single flashcard with its audio."""
     with container(border=True):
         write(f"{flashcard['FrontText']}")
@@ -26,7 +26,7 @@ def display_flashcard(flashcard):
 
             col1, col2 = columns(2)
 
-            if col1.button("Edit", key=f"Edit_{flashcard['BackText']}", icon="✏️", use_container_width=True):
+            if col1.button("Edit", key=f"Edit_{flashcard['BackText']}_{index}", icon="✏️", use_container_width=True):
                 sidebar.data_editor(
                     flashcard_df,
                     column_config={
@@ -37,6 +37,6 @@ def display_flashcard(flashcard):
                     hide_index=True,
                 )
             
-            if col2.button("Dlete", key=f"Delete_{flashcard['BackText']}", icon="🗑️", use_container_width=True):
+            if col2.button("Dlete", key=f"Delete_{flashcard['BackText']}_{index}", icon="🗑️", use_container_width=True):
                 session_state.flashcards_df.drop(flashcard_df.index, inplace=True)
                 rerun()

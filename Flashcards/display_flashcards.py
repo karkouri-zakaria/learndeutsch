@@ -53,4 +53,4 @@ def display_flashcards(flashcards_df, sidebar_manager):
             cols = columns(len(row))
             for col, (index, flashcard) in zip(cols, row.iterrows()):
                 with col:
-                    display_flashcard(flashcard)
+                    display_flashcard(index, flashcard)
