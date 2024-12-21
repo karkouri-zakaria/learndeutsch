@@ -1,4 +1,4 @@
-from streamlit import audio, button, cache_data, columns, container, popover, rerun, session_state, sidebar, write
+from streamlit import audio, button, cache_data, columns, container, data_editor, popover, rerun, session_state, sidebar, write
 from Audio.generate_audio import generate_audio
 from Flashcards.get_noun_articles import get_noun_articles
 import pandas as pd
@@ -27,7 +27,7 @@ def display_flashcard(index, flashcard):
             col1, col2 = columns(2)
 
             if col1.button("Edit", key=f"Edit_{flashcard['BackText']}_{index}", icon="✏️", use_container_width=True):
-                sidebar.data_editor(
+                data_editor(
                     flashcard_df,
                     column_config={
                         "FrontText": "English",
@@ -36,7 +36,7 @@ def display_flashcard(index, flashcard):
                     use_container_width=True,
                     hide_index=True,
                 )
-            
+
             if col2.button("Dlete", key=f"Delete_{flashcard['BackText']}_{index}", icon="🗑️", use_container_width=True):
                 session_state.flashcards_df.drop(flashcard_df.index, inplace=True)
                 rerun()

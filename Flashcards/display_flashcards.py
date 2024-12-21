@@ -1,11 +1,14 @@
 from pandas import DataFrame
-from streamlit import columns, expander, form, form_submit_button, fragment, sidebar, status, text_input, write, button, session_state
+from streamlit import columns, expander, form, form_submit_button, fragment, markdown, metric, sidebar, status, text_input, write, button, session_state
 from Flashcards.display_flashcard import display_flashcard
 from Audio.generate_audio import generate_audio_files
 
 def display_flashcards(flashcards_df, sidebar_manager):
     """Display the flashcards in the app."""
-    write("### Extracted Flashcards")
+
+    col1, col2, col3 = columns([4,1,6] ,gap="small", vertical_alignment="bottom")
+
+    col1.header("Extracted Flashcards")
     
     # Sidebar to add a new flashcard
     session_state.flashcards_df = sidebar_manager.add_flashcard(session_state.flashcards_df)
@@ -17,22 +20,35 @@ def display_flashcards(flashcards_df, sidebar_manager):
     cards_per_page = 100
     total_pages = (len(flashcards_df) + cards_per_page - 1) // cards_per_page
 
-    # Display page header
-    col1, col2, col3 = columns(3 ,gap="large")
-    col1.write(f"**`Number of flashcards: {len(flashcards_df)}`**")
-    col2.write(f"**`Sort: {sidebar_manager.sort_option}`**")
-    col3.write(f"**`Search: {sidebar_manager.search_query}`**")
+    # Display the number of flashcards
+    col1.metric("Number of Flashcards", f"{len(flashcards_df)}")
+
+    # Display the search query
+    col2.markdown("Search:")
+    if sidebar_manager.search_query:
+        col3.markdown(f"`{sidebar_manager.search_query}`")
+    else:
+        col3.markdown("🔍 No search applied")
+
+    # Display the selected sort option
+    col2.markdown("Sort by:")
+    if sidebar_manager.search_query:
+        col3.markdown(f"`{sidebar_manager.sort_option}`")
+    else:
+        col3.markdown("↕️ No Sort applied")
 
     # Pagination controls
-    with col1:
-        if session_state.current_page > 0 and button("Previous"):
+    write("---")
+    colpg, colp, coln = columns(3 ,gap="large")
+    with colp:
+        if session_state.current_page > 0 and button("Previous", use_container_width=True):
             session_state.current_page -= 1
-    with col3:
-        if session_state.current_page < total_pages - 1 and button("Next"):
+    with coln:
+        if session_state.current_page < total_pages - 1 and button("Next", use_container_width=True):
             session_state.current_page += 1
 
     # Display current page number
-    col2.write(f"**Page {session_state.current_page + 1} of {total_pages}**")
+    colpg.metric(f"Page", f"{session_state.current_page + 1} of {total_pages}")
 
     # Subset data for the current page
     start_idx = session_state.current_page * cards_per_page
