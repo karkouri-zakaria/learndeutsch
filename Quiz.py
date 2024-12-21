@@ -1,4 +1,4 @@
-from streamlit import audio, button, columns, container, expander, fragment, popover, session_state, markdown, write
+from streamlit import audio, button, columns, container, expander, fragment, metric, popover, session_state, markdown, write
 from pathlib import Path
 from Audio.generate_audio import generate_audio
 
@@ -22,7 +22,7 @@ def Quiz(flashcards_df):
 
             # Display the flashcard content
             with container(border=True):
-                markdown(f"#### Flashcard {current_index + 1} of {total_flashcards}", unsafe_allow_html=True)
+                metric(f"Flashcard", f"{current_index + 1} of {total_flashcards}", unsafe_allow_html=True)
                 
                 # Horizontal Buttons
                 left_button, right_button, _ = columns([1, 1, 10])  # Create space for buttons
