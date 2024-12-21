@@ -21,7 +21,7 @@ class AppSidebar:
         with sidebar.expander("Search and Sort Options", expanded=False, icon="🔍"):
             self.search_query = text_input("Search Flashcards", key="search_query")
             self.sort_option = selectbox(
-                "Sort By", ["", "Front Text", "Back Text", "Shuffle"], key="sort_option"
+                "Sort By", ["", "English", "Deutsch", "Shuffle"], key="sort_option"
             )
     
     def get_user_input(self):
