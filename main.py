@@ -26,13 +26,13 @@ def main():
     
     if "flashcards_df" not in session_state or session_state.flashcards_df is None:
         session_state.flashcards_df = Handle_file_upload(session_state.flashcards_df, session_state.uploaded_file_data, session_state.success_value)
+        session_state.flashcards_df = session_state.flashcards_df.iloc[::-1].reset_index(drop=True)
     
         
     # Add navigation in the sidebar using a toggle
     table = sidebar.toggle("Show Table", key="show_quiz_toggle", value=False)
-    
+
     # Reverse the order of the DataFrame
-    session_state.flashcards_df = session_state.flashcards_df.iloc[::-1].reset_index(drop=True)
 
     if table:
         title("Tables")
