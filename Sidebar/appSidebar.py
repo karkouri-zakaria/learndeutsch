@@ -79,4 +79,5 @@ class AppSidebar:
                 data=updated_csv,
                 file_name="flashcards.csv",
                 mime="text/csv",
+                use_container_width=True,
             )
