@@ -10,7 +10,6 @@ def main():
 
     # Initialize the Sidebar
     sidebar_manager = AppSidebar()
-    sidebar.title("📚 Flashquiz By Zakaria")
     sidebar_manager.get_user_input()
 
 
