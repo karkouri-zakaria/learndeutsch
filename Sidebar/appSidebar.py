@@ -27,6 +27,7 @@ class AppSidebar:
     def get_user_input(self):
         """Get user input for text area and play audio if provided."""
         self.user_input = sidebar.text_area("---", "", placeholder="Write something to read ...", key="user_input")
+        write("---")
 
         if self.user_input:
             with sidebar.expander("Reading", expanded=True, icon="🗣️"):
