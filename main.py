@@ -35,11 +35,11 @@ def main():
     # Reverse the order of the DataFrame
 
     if table:
-        title("Tables")
+        title("Tables by zakaria 📃")
         sidebar_manager.display_search_and_sort()
         Flashquiz_viewer_table(sidebar_manager, session_state.flashcards_df)
     else:
-        title("Quiz")
+        title("Quiz by zakaria 🧪")
         Quiz(session_state.flashcards_df)
 
 if __name__ == "__main__":
