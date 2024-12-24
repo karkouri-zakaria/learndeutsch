@@ -1,6 +1,6 @@
 from streamlit import session_state, set_page_config, sidebar, title
 from Files.Handle_file_upload import Handle_file_upload
-from Flashcards.Viewer import Flashquiz_viewer_table
+from Viewer import Flashquiz_viewer_table
 from Quiz import Quiz
 from Sidebar.appSidebar import AppSidebar
 from Files.Upload import file_upload_dialog

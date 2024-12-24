@@ -1,24 +1,44 @@
-from streamlit import audio, button, columns, container, expander, fragment, metric, popover, session_state, markdown, write
 from pathlib import Path
+
+from streamlit import audio, button, columns, container, fragment, markdown, metric, popover, session_state, toggle, write
 from Audio.generate_audio import generate_audio
 
 @fragment
 def Quiz(flashcards_df):
+    if 'flashcard_index' not in session_state:
+        session_state.flashcard_index = 0
+    if 'shuffled' not in session_state:
+        session_state.shuffled = False  # Track shuffle state
+    if 'flashcards_df' not in session_state:
+        session_state.flashcards_df = flashcards_df  # Store the original order
 
     if flashcards_df is not None:
         if not flashcards_df.empty:
-            # Shuffle flashcards once and store in session state
-            if "shuffled_flashcards" not in session_state:
-                session_state.shuffled_flashcards = flashcards_df.sample(frac=1).reset_index(drop=True)
-                session_state.flashcard_index = 0  # Initialize index after shuffling
+            # Check the shuffle toggle
+            shuffle_enabled = toggle(
+                "Shuffle flashcards", 
+                key="shuffle_flashcards", 
+                value=session_state.shuffled, 
+                help="Randomize the flashcards order"
+            )
+            
+            # Shuffle or reset flashcards based on toggle state
+            if shuffle_enabled and not session_state.shuffled:
+                session_state.flashcards_df = flashcards_df.sample(frac=1).reset_index(drop=True)
+                session_state.flashcard_index = 0  # Reset to first flashcard
+                session_state.shuffled = True
+            elif not shuffle_enabled and session_state.shuffled:
+                session_state.flashcards_df = flashcards_df  # Restore original order
+                session_state.flashcard_index = 0  # Reset to first flashcard
+                session_state.shuffled = False
 
-            # Access shuffled flashcards
-            shuffled_flashcards = session_state.shuffled_flashcards
+            # Access the current flashcards data
+            flashcards_df = session_state.flashcards_df
 
             # Get the current flashcard
             current_index = session_state.flashcard_index
-            total_flashcards = len(shuffled_flashcards)     
-            flashcard = shuffled_flashcards.iloc[current_index]
+            total_flashcards = len(flashcards_df)
+            flashcard = flashcards_df.iloc[current_index]
 
             # Display the flashcard content
             with container(border=True):
