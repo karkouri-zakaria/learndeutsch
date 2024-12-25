@@ -1,4 +1,5 @@
 from streamlit import session_state, set_page_config, sidebar, title
+from Chatbot import Chatbot
 from Files.Handle_file_upload import Handle_file_upload
 from Viewer import Flashquiz_viewer_table
 from Quiz import Quiz
@@ -41,6 +42,8 @@ def main():
     else:
         title("Quiz by zakaria 🧪")
         Quiz(session_state.flashcards_df)
+    
+    Chatbot()
 
 if __name__ == "__main__":
     main()
