@@ -1,8 +1,8 @@
-from streamlit import session_state, sidebar, spinner, write, chat_input, chat_message, button
+from streamlit import fragment, session_state, sidebar, spinner, write, chat_input, chat_message, button
 
 from huggingface_hub import InferenceClient
 
-
+@fragment
 def Chatbot():
     client = InferenceClient(api_key="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")
 
