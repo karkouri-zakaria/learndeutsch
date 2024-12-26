@@ -5,6 +5,8 @@ from Viewer import Flashquiz_viewer_table
 from Quiz import Quiz
 from Sidebar.appSidebar import AppSidebar
 from Files.Upload import file_upload_dialog
+from huggingface_hub import InferenceClient
+
 
 def main():
     set_page_config(layout="wide")
@@ -12,6 +14,7 @@ def main():
     # Initialize the Sidebar
     sidebar_manager = AppSidebar()
     sidebar_manager.get_user_input()
+    bot = InferenceClient(api_key="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")
 
 
     # File uploaders section in the sidebar
@@ -43,7 +46,8 @@ def main():
         title("Quiz by zakaria 🧪")
         Quiz(session_state.flashcards_df)
     
-    Chatbot()
+    with sidebar:
+        Chatbot(bot)
 
 if __name__ == "__main__":
     main()

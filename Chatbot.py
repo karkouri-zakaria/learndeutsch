@@ -1,10 +1,8 @@
 from streamlit import fragment, session_state, sidebar, spinner, write, chat_input, chat_message, button
 
-from huggingface_hub import InferenceClient
 
 @fragment
-def Chatbot():
-    client = InferenceClient(api_key="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")
+def Chatbot(bot):
 
     # Define the system message
     system_message = {
@@ -35,13 +33,11 @@ def Chatbot():
             session_state.messages = [system_message]  # Reset messages with system message
 
     # Sidebar button to toggle the chat
-    sidebar.write("---")
-    sidebar.button("Chatbot", on_click=toggle_chat, icon="💬", use_container_width=True)
+    write("---")
+    button("Chatbot", on_click=toggle_chat, icon="💬", use_container_width=True)
 
     # Popover for Chat Interface
     if session_state.show_chat:
-        with sidebar:
-
             # Display previous messages in chat
             for message in session_state.messages[1:]:  # Skip the system message for display
                 with chat_message(message["role"]):
@@ -56,7 +52,7 @@ def Chatbot():
 
                 # Function to generate LLM response
                 def generate_response(conversation_history):
-                    return client.chat.completions.create(
+                    return bot.chat.completions.create(
                         model="Qwen/Qwen2.5-72B-Instruct",
                         messages=conversation_history,
                         max_tokens=500,
