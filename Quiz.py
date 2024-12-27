@@ -16,21 +16,21 @@ def Quiz(flashcards_df):
         if not flashcards_df.empty:
             # Check the shuffle toggle
             shuffle_enabled = toggle(
-                "Unshuffle flashcards", 
+                "Shuffle flashcards", 
                 key="shuffle_flashcards", 
                 value=session_state.shuffled, 
                 help="Randomize the flashcards order"
             )
-            
+
             # Shuffle or reset flashcards based on toggle state
-            if not shuffle_enabled and not session_state.shuffled:
+            if shuffle_enabled and not session_state.shuffled:
                 session_state.flashcards_df = flashcards_df.sample(frac=1).reset_index(drop=True)
                 session_state.flashcard_index = 0  # Reset to first flashcard
-                session_state.shuffled = False
-            elif shuffle_enabled and session_state.shuffled:
+                session_state.shuffled = True
+            elif not shuffle_enabled and session_state.shuffled:
                 session_state.flashcards_df = flashcards_df  # Restore original order
                 session_state.flashcard_index = 0  # Reset to first flashcard
-                session_state.shuffled = True
+                session_state.shuffled = False
 
             # Access the current flashcards data
             flashcards_df = session_state.flashcards_df
@@ -43,7 +43,7 @@ def Quiz(flashcards_df):
             # Display the flashcard content
             with container(border=True):
                 metric("Flashcard", f"{current_index + 1} of {total_flashcards}")
-                
+
                 # Horizontal Buttons
                 left_button, right_button, _ = columns([1, 1, 10])  # Create space for buttons
                 with left_button:
