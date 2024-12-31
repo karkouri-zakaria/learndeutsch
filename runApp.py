@@ -13,5 +13,5 @@ def ensure_streamlit_installed():
 
 if __name__ == "__main__":
     ensure_streamlit_installed()
-    app_file = "path/to/your_app.py"  # Replace with your app's path
+    app_file = "./main.py"  # Replace with your app's path
     system(f"streamlit run {app_file}")
