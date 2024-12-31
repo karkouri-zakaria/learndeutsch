@@ -58,7 +58,7 @@ class AppSidebar:
                     # Validate inputs
                     if front_text and back_text:
                         # Prepend the new flashcard to the DataFrame
-                        new_flashcard = DataFrame({"FrontText": [front_text], "BackText": [back_text]})
+                        new_flashcard = DataFrame({"English": [front_text], "Deustch": [back_text]})
                         flashcards_df = concat([new_flashcard, flashcards_df], ignore_index=True)
 
                         # Save updated DataFrame to session state

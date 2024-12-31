@@ -29,6 +29,6 @@ def generate_audio_files(flashcards_df, cache_dir="Audio_cache"):
         makedirs(cache_dir, exist_ok=True)
 
         for _, flashcard in flashcards_df.iterrows():
-            flashcard["audio_path"] = generate_audio(flashcard["BackText"], cache_dir=cache_dir)
+            flashcard["audio_path"] = generate_audio(flashcard["Deustch"], cache_dir=cache_dir)
 
         session_state.audio_generated = True

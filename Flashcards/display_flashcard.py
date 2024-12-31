@@ -7,11 +7,11 @@ cache_data()
 def display_flashcard(index, flashcard):
     """Display a single flashcard with its audio."""
     with container(border=True):
-        write(f"{flashcard['FrontText']}")
+        write(f"{flashcard['English']}")
         with popover("⚫🔴🟡", help="Click to open"):
             try:
-                # Generate the audio file path based on the BackText
-                audio_file = generate_audio(flashcard['BackText'])  # This generates and returns the file path
+                # Generate the audio file path based on the Deustch
+                audio_file = generate_audio(flashcard['Deustch'])  # This generates and returns the file path
 
                 # Open and play the generated audio file
                 with open(audio_file, "rb") as audio_data:
@@ -19,24 +19,24 @@ def display_flashcard(index, flashcard):
 
             except Exception as e:
                 write(f"Error: {str(e)}")
-            write(f"> {flashcard['BackText']}")
+            write(f"> {flashcard['Deustch']}")
 
             # Use the flashcard data as-is (no renaming)
             flashcard_df = pd.DataFrame([flashcard])
 
             col1, col2 = columns(2)
 
-            if col1.button("Edit", key=f"Edit_{flashcard['BackText']}_{index}", icon="✏️", use_container_width=True):
+            if col1.button("Edit", key=f"Edit_{flashcard['Deustch']}_{index}", icon="✏️", use_container_width=True):
                 data_editor(
                     flashcard_df,
                     column_config={
-                        "FrontText": "English",
-                        "BackText": "Deutsch",
+                        "English": "English",
+                        "Deustch": "Deutsch",
                     },
                     use_container_width=True,
                     hide_index=True,
                 )
 
-            if col2.button("Dlete", key=f"Delete_{flashcard['BackText']}_{index}", icon="🗑️", use_container_width=True):
+            if col2.button("Dlete", key=f"Delete_{flashcard['Deustch']}_{index}", icon="🗑️", use_container_width=True):
                 session_state.flashcards_df.drop(flashcard_df.index, inplace=True)
                 rerun()

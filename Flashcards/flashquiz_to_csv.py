@@ -1,7 +1,7 @@
 # Function to parse .flashquiz file and extract FrontText and BackText
 from xml.etree.ElementTree import fromstring
 from pandas import DataFrame
-from streamlit import cache_data
+from streamlit import cache_data, write
 
 
 @cache_data
@@ -32,7 +32,7 @@ def flashquiz_to_csv(file_content):
             back_texts.append(back_text.text)
 
     # Create a DataFrame with the collected data
-    df = DataFrame({"FrontText": front_texts, "BackText": back_texts})
+    df = DataFrame({"English": front_texts, "Deustch": back_texts})
 
     # Convert DataFrame to CSV content as a string
     csv_data = df.to_csv(index=False, encoding="utf-8")

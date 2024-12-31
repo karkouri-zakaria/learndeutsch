@@ -1,4 +1,4 @@
-from streamlit import session_state, set_page_config, sidebar, title
+from streamlit import session_state, set_page_config, sidebar, title, write
 from Chatbot import Chatbot
 from Files.Handle_file_upload import Handle_file_upload
 from Viewer import Flashquiz_viewer_table
@@ -26,6 +26,7 @@ def main():
         session_state.success_value = False
     if sidebar.button("Upload", icon="📂", use_container_width=True):
         file_upload_dialog()
+
     
     if "flashcards_df" not in session_state or session_state.flashcards_df is None:
         session_state.flashcards_df = Handle_file_upload(session_state.flashcards_df, session_state.uploaded_file_data, session_state.success_value)
@@ -39,11 +40,11 @@ def main():
     # Reverse the order of the DataFrame
 
     if table:
-        title("Tables by zakaria 📃")
+        title("Tables 📃")
         sidebar_manager.display_search_and_sort()
         Flashquiz_viewer_table(sidebar_manager, session_state.flashcards_df)
     else:
-        title("Quiz by zakaria 🧪")
+        title("Quiz 🧪")
         Quiz(session_state.flashcards_df)
     
     with sidebar:
