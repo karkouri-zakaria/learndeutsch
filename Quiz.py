@@ -23,7 +23,7 @@ def check_answer(flashcard, current_index):
 
     # Display feedback only when "Submit" is clicked
     if submit:
-        correct_answer = flashcard['Deustch'].strip().lower()
+        correct_answer = flashcard['Deutsch'].strip().lower()
         user_answer = answer.strip().lower()
 
         # Perform character-by-character comparison
@@ -107,13 +107,13 @@ def Quiz(flashcards_df):
 
                 # Expander for Answer
                 with popover("**Deutsch:**", icon="💡", use_container_width=True, help="Click to open"):
-                    markdown(f"# {flashcard['Deustch']}")
+                    markdown(f"# {flashcard['Deutsch']}")
 
                     # Generate or load cached audio
                     try:
-                        audio_path = Path(f"cached_audios/{flashcard['Deustch']}.mp3")
+                        audio_path = Path(f"cached_audios/{flashcard['Deutsch']}.mp3")
                         if not audio_path.exists():
-                            audio_path = generate_audio(flashcard["Deustch"])  # Replace with your actual audio generation logic
+                            audio_path = generate_audio(flashcard["Deutsch"])  # Replace with your actual audio generation logic
                         with open(audio_path, "rb") as audio_file:
                             audio(audio_file, format="audio/mp3", autoplay=False)
                     except Exception as e:

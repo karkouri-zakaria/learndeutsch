@@ -1,4 +1,5 @@
-from pandas import DataFrame, concat
+from io import BytesIO
+from pandas import DataFrame, ExcelWriter, concat
 from streamlit import audio, button, download_button, expander, form, form_submit_button, selectbox, session_state, sidebar, success, text_input, warning, write
 
 from Files.Handle_file_upload import show_dialog
@@ -58,7 +59,7 @@ class AppSidebar:
                     # Validate inputs
                     if front_text and back_text:
                         # Prepend the new flashcard to the DataFrame
-                        new_flashcard = DataFrame({"English": [front_text], "Deustch": [back_text]})
+                        new_flashcard = DataFrame({"English": [front_text], "Deutsch": [back_text]})
                         flashcards_df = concat([new_flashcard, flashcards_df], ignore_index=True)
 
                         # Save updated DataFrame to session state
@@ -74,11 +75,16 @@ class AppSidebar:
     def display_download_button(self, flashcards_df):
         """Display a download button for the flashcards."""
         with sidebar.expander("Download Flashcards", expanded=False, icon="📥"):
-            updated_csv = flashcards_df.to_csv(index=False)
+            # Convert DataFrame to Excel content as a bytes object
+            output = BytesIO()
+            with ExcelWriter(output, engine='xlsxwriter') as writer:
+                flashcards_df.to_excel(writer, index=False, sheet_name='Flashcards')
+            xlsx_data = output.getvalue()
+            
             download_button(
-                label="Download CSV",
-                data=updated_csv,
-                file_name="flashcards.csv",
-                mime="text/csv",
+                label="Download Excel",
+                data=xlsx_data,
+                file_name="flashcards.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True,
             )

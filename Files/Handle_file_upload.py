@@ -1,24 +1,24 @@
-from io import StringIO
+from io import BytesIO
 from streamlit import dialog, error, info, session_state, success, write
-from Flashcards.flashquiz_csv_table import flashquiz_csv_table
-from Flashcards.flashquiz_to_csv import flashquiz_to_csv
+from Flashcards.flashquiz_xlsx_table import flashquiz_xlsx_table
+from Flashcards.flashquiz_to_xlsx import flashquiz_to_xlsx
 
 def Handle_file_upload(flashcards_df, uploaded_file, success_value):
     """Handle file upload and processing."""
-    csv_data, csv_file_like = None, None
+    xlsx_data, xlsx_file_like = None, None
 
     if uploaded_file:
         file_extension = uploaded_file.name.split(".")[-1].lower()
 
-        if file_extension == "csv":
+        if file_extension == "xlsx":
             try:
-                # Process CSV file
-                flashcards_df = flashquiz_csv_table(uploaded_file)
+                # Process Excel file
+                flashcards_df = flashquiz_xlsx_table(uploaded_file)
                 if success_value:
                     show_dialog()
                     session_state.success_value = False
             except Exception as e:
-                error(f"Error processing CSV file: {e}", icon="🚫")
+                error(f"Error processing Excel file: {e}", icon="🚫")
 
         elif file_extension == "flashquiz":
             try:
@@ -27,20 +27,18 @@ def Handle_file_upload(flashcards_df, uploaded_file, success_value):
                 
                 # Check if the file content is empty or invalid
                 if not file_content.strip():
-                    raise ValueError("The .flashquiz file is empty. or corrupted. Please try again.")
-                # Convert .flashquiz content to CSV
-                csv_data = flashquiz_to_csv(file_content)
-                csv_file_like = StringIO(csv_data)
-                flashcards_df = flashquiz_csv_table(csv_file_like)
+                    raise ValueError("The .flashquiz file is empty or corrupted. Please try again.")
+                
+                # Convert .flashquiz content to Excel
+                xlsx_data = flashquiz_to_xlsx(file_content)
+                xlsx_file_like = BytesIO(xlsx_data)
+                flashcards_df = flashquiz_xlsx_table(xlsx_file_like)
                 
                 if success_value:
                     show_dialog()
                     session_state.success_value = False
             except Exception as e:
                 error(f"Error processing .flashquiz file: {e}", icon="🚫")
-
-    if flashcards_df is None or flashcards_df.empty:
-        info("No valid file uploaded or processed.", icon="ℹ️")
 
     return flashcards_df
 

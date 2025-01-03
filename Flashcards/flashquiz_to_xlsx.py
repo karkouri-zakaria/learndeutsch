@@ -1,11 +1,11 @@
 # Function to parse .flashquiz file and extract FrontText and BackText
 from xml.etree.ElementTree import fromstring
-from pandas import DataFrame
+from pandas import DataFrame, ExcelWriter
+from io import BytesIO
 from streamlit import cache_data, write
 
-
 @cache_data
-def flashquiz_to_csv(file_content):
+def flashquiz_to_xlsx(file_content):
     # Parse the content as XML
     root = fromstring(file_content)
 
@@ -32,8 +32,12 @@ def flashquiz_to_csv(file_content):
             back_texts.append(back_text.text)
 
     # Create a DataFrame with the collected data
-    df = DataFrame({"English": front_texts, "Deustch": back_texts})
+    df = DataFrame({"English": front_texts, "Deutsch": back_texts})
 
-    # Convert DataFrame to CSV content as a string
-    csv_data = df.to_csv(index=False, encoding="utf-8")
-    return csv_data
+    # Convert DataFrame to Excel content as a bytes object
+    output = BytesIO()
+    with ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Flashcards')
+    xlsx_data = output.getvalue()
+    
+    return xlsx_data
