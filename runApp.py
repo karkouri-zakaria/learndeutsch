@@ -1,17 +1,16 @@
-
-from os import system
-from subprocess import CalledProcessError, check_call
+from os import chdir, devnull, path, system
+from subprocess import check_call, CalledProcessError
 from sys import executable
 
-
-def ensure_streamlit_installed():
-    try:
-        check_call([executable, "-m", "pip", "show", "streamlit"])
-    except CalledProcessError:
-        print("Streamlit is not installed. Installing...")
-        check_call([executable, "-m", "pip", "install", "streamlit"])
+from streamlit import set_option
 
 if __name__ == "__main__":
-    ensure_streamlit_installed()
-    app_file = "./main.py"  # Replace with your app's path
-    system(f"streamlit run {app_file}")
+    chdir(path.dirname(path.abspath(__file__)))
+    try:
+        check_call([executable, "-m", "pip", "install", "streamlit", "-r", "requirements.txt"], stdout=open(devnull, 'w'), stderr=open(devnull, 'w'))
+    except CalledProcessError:
+        print("Error installing dependencies.")
+    if path.exists("main.py"):
+        system("streamlit run main.py --server.enableStaticServing=false")
+    else:
+        print("Error: 'main.py' not found.")
