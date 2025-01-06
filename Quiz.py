@@ -18,7 +18,7 @@ def check_answer(flashcard, current_index):
         key=f"submit_button_{current_index}",
         type="primary",
         help="Check your answer",
-        use_container_width=True,
+        #use_container_width=True,
     )
 
     # Display feedback only when "Submit" is clicked
