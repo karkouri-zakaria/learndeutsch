@@ -32,17 +32,14 @@ def check_answer(flashcard, current_index):
 
         # Compare up to the length of the user's answer
         for i, user_char in enumerate(user_answer):
-            if i < len(correct_answer) and user_char == correct_answer[i]:
+            if i < len(correct_answer) and user_char in ["a", "u", "o", "s"] and correct_answer[i] in ["ä", "ü", "ö", "ß"]:
+                feedback += f"<span style='color: green;'>{user_char}</span>"
+            elif i < len(correct_answer) and user_char == correct_answer[i]:
                 feedback += f"<span style='color: green;'>{user_char}</span>"
             else:
-                feedback += f"<span style='color: red;'>{user_char}</span>"
+                feedback += f"<span style='color: red;'>-</span>"
                 mistakes_found = True
-
-        # Mark extra characters in the user's answer beyond the length of the correct answer
-        if len(user_answer) > len(correct_answer):
-            for extra_char in user_answer[len(correct_answer):]:
-                feedback += f"<span style='color: red;'>{extra_char}</span>"
-                mistakes_found = True
+                break
 
         # Provide feedback
         if mistakes_found:
@@ -51,7 +48,20 @@ def check_answer(flashcard, current_index):
                 unsafe_allow_html=True,
             )
         else:
-            markdown("✅ **Correct!** Great job!")
+            if len(user_answer) == len(correct_answer):
+                markdown("✅ That's 100% correct:")
+                markdown(f"# {correct_answer}")
+                # Generate or load cached audio
+                try:
+                    audio_path = Path(f"cached_audios/{flashcard['Deutsch']}.mp3")
+                    if not audio_path.exists():
+                        audio_path = generate_audio(flashcard["Deutsch"])  # Replace with your actual audio generation logic
+                    with open(audio_path, "rb") as audio_file:
+                        audio(audio_file, format="audio/mp3", autoplay=True)
+                except Exception as e:
+                    write(f"Error generating audio: {str(e)}")
+            else:
+                markdown("✅ Correct continue ...")
 
 
 @fragment
@@ -108,16 +118,6 @@ def Quiz(flashcards_df):
                 # Expander for Answer
                 with popover("**Deutsch:**", icon="💡", use_container_width=True, help="Click to open"):
                     markdown(f"# {flashcard['Deutsch']}")
-
-                    # Generate or load cached audio
-                    try:
-                        audio_path = Path(f"cached_audios/{flashcard['Deutsch']}.mp3")
-                        if not audio_path.exists():
-                            audio_path = generate_audio(flashcard["Deutsch"])  # Replace with your actual audio generation logic
-                        with open(audio_path, "rb") as audio_file:
-                            audio(audio_file, format="audio/mp3", autoplay=False)
-                    except Exception as e:
-                        write(f"Error generating audio: {str(e)}")
 
                 # Call the answer-checking feature
                 check_answer(flashcard, current_index)

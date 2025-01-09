@@ -16,7 +16,7 @@ def display_flashcards(flashcards_df, sidebar_manager, num_columns=4):
     if "current_page" not in session_state:
         session_state.current_page = 0
 
-    cards_per_page = 20
+    cards_per_page = 100
 
     # Handle empty DataFrame
     if len(flashcards_df) == 0:
