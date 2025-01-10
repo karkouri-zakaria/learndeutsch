@@ -1,13 +1,13 @@
 from pathlib import Path
-from streamlit import audio, button, columns, container, fragment, markdown, metric, popover, session_state, text_input, toggle, write
+from streamlit import audio, button, cache_data, columns, container, fragment, markdown, metric, popover, session_state, text_input, toggle, write
 from Audio.generate_audio import generate_audio
 
-from streamlit import markdown, text_input, button
+@cache_data
+def normalize_german(text):
+    return text.translate(str.maketrans({'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss'}))
 
 @fragment
-def check_answer(flashcard, current_index):
-    """Check the user's answer and provide feedback highlighting only mistakes."""
-    
+def check_answer(flashcard, current_index):    
     # Input and feedback for the answer
     answer = text_input(
         "Type your answer in Deutsch:",
@@ -21,18 +21,6 @@ def check_answer(flashcard, current_index):
         #use_container_width=True,
     )
 
-    equivalent_map = {
-            'ä': 'ae',
-            'ö': 'oe',
-            'ü': 'ue',
-            'ß': 'ss',
-        }
-    
-    def normalize_german(text):
-            for char, replacement in equivalent_map.items():
-                text = text.replace(char, replacement)
-            return text
-
     # Display feedback only when "Submit" is clicked
     if submit:
         correct_answer = normalize_german(flashcard['Deutsch'].strip().lower())
@@ -44,9 +32,7 @@ def check_answer(flashcard, current_index):
 
         # Compare up to the length of the user's answer
         for i, user_char in enumerate(user_answer):
-            if i < len(correct_answer) and user_char in ["a", "u", "o", "s"] and correct_answer[i] in ["ä", "ü", "ö", "ß"]:
-                feedback += f"<span style='color: green;'>{user_char}</span>"
-            elif i < len(correct_answer) and user_char == correct_answer[i]:
+            if i < len(correct_answer) and user_char == correct_answer[i]:
                 feedback += f"<span style='color: green;'>{user_char}</span>"
             else:
                 feedback += f"<span style='color: red;'>-</span>"
