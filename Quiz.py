@@ -21,9 +21,21 @@ def check_answer(flashcard, current_index):
         #use_container_width=True,
     )
 
+    equivalent_map = {
+            'ä': 'ae',
+            'ö': 'oe',
+            'ü': 'ue',
+            'ß': 'ss',
+        }
+    
+    def normalize_german(text):
+            for char, replacement in equivalent_map.items():
+                text = text.replace(char, replacement)
+            return text
+
     # Display feedback only when "Submit" is clicked
     if submit:
-        correct_answer = flashcard['Deutsch'].strip().lower()
+        correct_answer = normalize_german(flashcard['Deutsch'].strip().lower())
         user_answer = answer.strip().lower()
 
         # Perform character-by-character comparison
@@ -50,7 +62,7 @@ def check_answer(flashcard, current_index):
         else:
             if len(user_answer) == len(correct_answer):
                 markdown("✅ That's 100% correct:")
-                markdown(f"# {correct_answer}")
+                markdown(f"# {flashcard['Deutsch']}")
                 # Generate or load cached audio
                 try:
                     audio_path = Path(f"cached_audios/{flashcard['Deutsch']}.mp3")
