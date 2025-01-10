@@ -42,7 +42,7 @@ def check_answer(flashcard, current_index):
         # Provide feedback
         if mistakes_found:
             markdown(
-                f"❌ **Try again.** Here's your input with mistakes highlighted:<br>{feedback}",
+                f"❌ **Try again.** Here's your input with mistakes highlighted:<br>    {feedback}",
                 unsafe_allow_html=True,
             )
         else:
@@ -116,6 +116,15 @@ def Quiz(flashcards_df):
                 # Expander for Answer
                 with popover("**Deutsch:**", icon="💡", use_container_width=True, help="Click to open"):
                     markdown(f"# {flashcard['Deutsch']}")
+                    # Generate or load cached audio
+                    try:
+                        audio_path = Path(f"cached_audios/{flashcard['Deutsch']}.mp3")
+                        if not audio_path.exists():
+                            audio_path = generate_audio(flashcard["Deutsch"])  # Replace with your actual audio generation logic
+                        with open(audio_path, "rb") as audio_file:
+                            audio(audio_file, format="audio/mp3", autoplay=False)
+                    except Exception as e:
+                        write(f"Error generating audio: {str(e)}")
 
                 # Call the answer-checking feature
                 check_answer(flashcard, current_index)
