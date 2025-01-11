@@ -24,7 +24,7 @@ def check_answer(flashcard, current_index):
     # Display feedback only when "Submit" is clicked
     if submit:
         correct_answer = normalize_german(flashcard['Deutsch'].strip().lower())
-        user_answer = answer.strip().lower()
+        user_answer = normalize_german(answer.strip().lower())
 
         # Perform character-by-character comparison
         feedback = ""
@@ -32,12 +32,11 @@ def check_answer(flashcard, current_index):
 
         # Compare up to the length of the user's answer
         for i, user_char in enumerate(user_answer):
-            if i < len(correct_answer) and user_char == correct_answer[i]:
+            if i < len(correct_answer) and user_char == correct_answer[i] or user_char == " ":
                 feedback += f"<span style='color: green;'>{user_char}</span>"
             else:
-                feedback += f"<span style='color: red;'>-</span>"
+                feedback += f"<span style='color: red;'>{user_char}</span>"
                 mistakes_found = True
-                break
 
         # Provide feedback
         if mistakes_found:
