@@ -53,7 +53,7 @@ def check_answer(flashcard, current_index):
                     if not audio_path.exists():
                         audio_path = generate_audio(flashcard["Deutsch"])  # Replace with your actual audio generation logic
                     with open(audio_path, "rb") as audio_file:
-                        audio(audio_file, format="audio/mp3", autoplay=False)
+                        audio(audio_file, format="audio/mp3", autoplay=True)
                 except Exception as e:
                     write(f"Error generating audio: {str(e)}")
             else:
@@ -121,7 +121,7 @@ def Quiz(flashcards_df):
                         if not audio_path.exists():
                             audio_path = generate_audio(flashcard["Deutsch"])  # Replace with your actual audio generation logic
                         with open(audio_path, "rb") as audio_file:
-                            col1.audio(audio_file, format="audio/mp3", autoplay=True)
+                            col1.audio(audio_file, format="audio/mp3", autoplay=False)
                     except Exception as e:
                         write(f"Error generating audio: {str(e)}")
                     
