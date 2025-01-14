@@ -24,7 +24,7 @@ class AppSidebar:
     def get_user_input(self):
         """Get user input for either text area or Verbformen search based on the toggle."""
         # Toggle to switch between user input and verb search
-        use_verb_search = sidebar.toggle("Audio/Wörterbuch", key="input_toggle", value=False)
+        use_verb_search = sidebar.toggle("🔉Audio/📖Wörterbuch", key="input_toggle", value=False)
         
         # Display the respective input field based on toggle value
         if use_verb_search:
