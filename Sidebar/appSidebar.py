@@ -24,25 +24,21 @@ class AppSidebar:
     def get_user_input(self):
         """Get user input for either text area or Verbformen search based on the toggle."""
         # Toggle to switch between user input and verb search
-        use_verb_search = sidebar.toggle("🔉Audio/📖Wörterbuch", key="input_toggle", value=False)
-        
+        sidebar.write("---")        
         # Display the respective input field based on toggle value
-        if use_verb_search:
-            verb_input = sidebar.text_area("",
-                placeholder="Search in Verbformen ...", 
-                key="verbformen_input", 
-                on_change=lambda: open(f"https://www.verbformen.com/?w={session_state.verbformen_input.strip()}") 
-                if session_state.verbformen_input.strip() else sidebar.warning("Please enter a valid German word.")
-            )
-        else:
-            self.user_input = sidebar.text_area("---", "", placeholder="Read text ...", key="user_input")
-            if self.user_input:
-                with sidebar.expander("Reading", expanded=True, icon="🗣️"):
-                    audio_path = generate_audio(self.user_input)
-                    with open(audio_path, "rb") as audio_file:
-                        audio_bytes = audio_file.read()
-                        audio(audio_bytes, format="audio/mp3", autoplay=True)
-        sidebar.write("---")
+        verb_input = sidebar.text_area("",
+            placeholder="📖Wörterbuch...", 
+            key="verbformen_input", 
+            on_change=lambda: open(f"https://www.verbformen.com/?w={session_state.verbformen_input.strip()}") 
+            if session_state.verbformen_input.strip() else None
+        )
+        self.user_input = sidebar.text_area("---", "", placeholder="🔉 Read ...", key="user_input")
+        if self.user_input:
+            with sidebar.expander("Reading", expanded=True, icon="🗣️"):
+                audio_path = generate_audio(self.user_input)
+                with open(audio_path, "rb") as audio_file:
+                    audio_bytes = audio_file.read()
+                    audio(audio_bytes, format="audio/mp3", autoplay=True)
 
     def add_flashcard(self, flashcards_df):
         with sidebar.expander("Add a New Flashcard", icon="📝"):
