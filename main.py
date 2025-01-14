@@ -2,8 +2,8 @@ from streamlit import session_state, set_page_config, sidebar, title
 from Files.Handle_file_upload import Handle_file_upload
 from Sidebar.appSidebar import AppSidebar
 from Files.Upload import file_upload_dialog
-from quiz import Quiz
-from viewer import Flashquiz_viewer_table
+from Quiz import Quiz
+from Viewer import Flashquiz_viewer_table
 
 def main():
     set_page_config(layout="wide")
