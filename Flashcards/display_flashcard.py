@@ -1,6 +1,5 @@
 from streamlit import audio, button, cache_data, columns, container, data_editor, popover, rerun, session_state, sidebar, write
 from Audio.generate_audio import generate_audio
-from Flashcards.get_noun_articles import get_noun_articles
 import pandas as pd
 
 cache_data()

@@ -1,12 +1,8 @@
 from io import BytesIO
+from webbrowser import open
 from pandas import DataFrame, ExcelWriter, concat
-from streamlit import audio, button, download_button, expander, form, form_submit_button, selectbox, session_state, sidebar, success, text_input, warning, write
-
-from Files.Handle_file_upload import show_dialog
-from Flashcards.detect_spelling_errors import detect_spelling_errors
-from Flashcards.get_noun_articles import get_noun_articles
 from Audio.generate_audio import generate_audio
-
+from streamlit import audio, download_button, form, form_submit_button, selectbox, session_state, sidebar, success, text_input, warning
 
 class AppSidebar:
     def __init__(self):
@@ -26,25 +22,27 @@ class AppSidebar:
             )
     
     def get_user_input(self):
-        """Get user input for text area and play audio if provided."""
-        self.user_input = sidebar.text_area("---", "", placeholder="Write something to read ...", key="user_input")
+        """Get user input for either text area or Verbformen search based on the toggle."""
+        # Toggle to switch between user input and verb search
+        use_verb_search = sidebar.toggle("Audio/Wörterbuch", key="input_toggle", value=False)
+        
+        # Display the respective input field based on toggle value
+        if use_verb_search:
+            verb_input = sidebar.text_area("",
+                placeholder="Search in Verbformen ...", 
+                key="verbformen_input", 
+                on_change=lambda: open(f"https://www.verbformen.com/?w={session_state.verbformen_input.strip()}") 
+                if session_state.verbformen_input.strip() else sidebar.warning("Please enter a valid German word.")
+            )
+        else:
+            self.user_input = sidebar.text_area("---", "", placeholder="Read text ...", key="user_input")
+            if self.user_input:
+                with sidebar.expander("Reading", expanded=True, icon="🗣️"):
+                    audio_path = generate_audio(self.user_input)
+                    with open(audio_path, "rb") as audio_file:
+                        audio_bytes = audio_file.read()
+                        audio(audio_bytes, format="audio/mp3", autoplay=True)
         sidebar.write("---")
-
-        if self.user_input:
-            with sidebar.expander("Reading", expanded=True, icon="🗣️"):
-                audio_path = generate_audio(self.user_input)
-                with open(audio_path, "rb") as audio_file:
-                    audio_bytes = audio_file.read()
-                    audio(audio_bytes, format="audio/mp3", autoplay=True)
-
-                write("> Articles and misspelled:")
-
-                for word, article in get_noun_articles(self.user_input):
-                    write(f"{article} {word}")
-
-                for word, suggestions in detect_spelling_errors(self.user_input):
-                    if suggestions:
-                        write(f"**{word}** -> {', '.join(suggestions)}")
 
     def add_flashcard(self, flashcards_df):
         with sidebar.expander("Add a New Flashcard", icon="📝"):

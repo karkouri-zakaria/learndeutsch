@@ -17,7 +17,6 @@ def check_answer(flashcard, current_index):
         "Submit",
         key=f"submit_button_{current_index}",
         type="primary",
-        help="Check your answer",
         #use_container_width=True,
     )
 
@@ -115,15 +114,26 @@ def Quiz(flashcards_df):
                 # Expander for Answer
                 with popover("**Deutsch:**", icon="💡", use_container_width=True, help="Click to open"):
                     markdown(f"# {flashcard['Deutsch']}")
+                    col1, col2 = columns([7, 1])
                     # Generate or load cached audio
                     try:
                         audio_path = Path(f"cached_audios/{flashcard['Deutsch']}.mp3")
                         if not audio_path.exists():
                             audio_path = generate_audio(flashcard["Deutsch"])  # Replace with your actual audio generation logic
                         with open(audio_path, "rb") as audio_file:
-                            audio(audio_file, format="audio/mp3", autoplay=False)
+                            col1.audio(audio_file, format="audio/mp3", autoplay=True)
                     except Exception as e:
                         write(f"Error generating audio: {str(e)}")
+                    
+                    # Add a button to open the link
+                    link = f"https://www.verbformen.com/?w={flashcard['Deutsch']}"
+                    col2.markdown(
+                        f"""<a href="{link}" target="_blank" style="text-decoration: none;">
+                        <button style="padding: 10px; background-color: #ffc107; color: white; border: none; border-radius: 30px; cursor: pointer;">
+                        📖 Wörterbuch
+                        </button></a>""",
+                        unsafe_allow_html=True
+                    )
 
                 # Call the answer-checking feature
                 check_answer(flashcard, current_index)
