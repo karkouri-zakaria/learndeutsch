@@ -26,7 +26,7 @@ class AppSidebar:
         # Toggle to switch between user input and verb search
         sidebar.write("---")        
         # Display the respective input field based on toggle value
-        verb_input = sidebar.text_area("",
+        verb_input = sidebar.text_area("---", "", 
             placeholder="📖Wörterbuch...", 
             key="verbformen_input", 
             on_change=lambda: open(f"https://www.verbformen.com/?w={session_state.verbformen_input.strip()}") 
