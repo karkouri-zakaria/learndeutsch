@@ -1,8 +1,9 @@
 from io import BytesIO
-from webbrowser import open
+from pathlib import Path
+from webbrowser import open as openURL
 from pandas import DataFrame, ExcelWriter, concat
 from Audio.generate_audio import generate_audio
-from streamlit import audio, download_button, form, form_submit_button, selectbox, session_state, sidebar, success, text_input, warning
+from streamlit import audio, download_button, form, form_submit_button, selectbox, session_state, sidebar, success, text_area, text_input, warning, write
 
 class AppSidebar:
     def __init__(self):
@@ -24,21 +25,26 @@ class AppSidebar:
     def get_user_input(self):
         """Get user input for either text area or Verbformen search based on the toggle."""
         # Toggle to switch between user input and verb search
-        sidebar.write("---")        
-        # Display the respective input field based on toggle value
-        verb_input = sidebar.text_area("---", "", 
-            placeholder="📖Wörterbuch...", 
-            key="verbformen_input", 
-            on_change=lambda: open(f"https://www.verbformen.com/?w={session_state.verbformen_input.strip()}") 
-            if session_state.verbformen_input.strip() else None
-        )
-        self.user_input = sidebar.text_area("---", "", placeholder="🔉 Read ...", key="user_input")
-        if self.user_input:
-            with sidebar.expander("Reading", expanded=True, icon="🗣️"):
-                audio_path = generate_audio(self.user_input)
-                with open(audio_path, "rb") as audio_file:
-                    audio_bytes = audio_file.read()
-                    audio(audio_bytes, format="audio/mp3", autoplay=True)
+        with sidebar:
+            write("---")        
+            # Display the respective input field based on toggle value
+            text_area("---", "", 
+                placeholder="📖Wörterbuch...", 
+                key="verbformen_input",
+                height=68, 
+                on_change=lambda: openURL(f"https://www.verbformen.com/?w={session_state.verbformen_input.strip()}") 
+                if session_state.verbformen_input.strip() else None
+            )
+            self.user_input = text_area("---", "", placeholder="🔉 Read ...", key="user_input")
+            if self.user_input:
+                try:
+                    audio_path = Path(f"cached_audios/{self.user_input}.mp3")
+                    if not audio_path.exists():
+                        audio_path = generate_audio(self.user_input)  # Replace with your actual audio generation logic
+                    with open(audio_path, "rb") as audio_file:
+                        audio(audio_file, format="audio/mp3", autoplay=True)
+                except Exception as e:
+                    write(f"Error generating audio: {str(e)}")
 
     def add_flashcard(self, flashcards_df):
         with sidebar.expander("Add a New Flashcard", icon="📝"):
