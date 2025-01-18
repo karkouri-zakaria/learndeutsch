@@ -13,11 +13,13 @@ def check_answer(flashcard, current_index):
         "Type your answer in Deutsch:",
         key=f"answer_input_{current_index}",
     )
-    submit = button(
-        "Submit",
+    submit_button, _ = columns([2, 10])
+    submit = submit_button.button(
+        "Check Answer",
         key=f"submit_button_{current_index}",
         type="primary",
-        #use_container_width=True,
+        use_container_width=True,
+        icon="🔍",
     )
 
     # Display feedback only when "Submit" is clicked
@@ -101,6 +103,9 @@ def Quiz(flashcards_df):
             with container(border=True):
                 metric("Flashcard", f"{current_index + 1} of {total_flashcards}")
 
+                # Front of the flashcard
+                markdown(f"# {flashcard['English']}")
+
                 # Horizontal Buttons
                 left_button, right_button, _ = columns([1, 1, 10])  # Create space for buttons
                 with left_button:
@@ -109,8 +114,10 @@ def Quiz(flashcards_df):
                 with right_button:
                     if button("⮞", key="next_button", use_container_width=True, type="primary", help="Next flashcard"):
                         session_state.flashcard_index = (current_index + 1) % total_flashcards
-                markdown(f"# {flashcard['English']}")
-
+                
+                # Call the answer-checking feature
+                check_answer(flashcard, current_index)
+                
                 # Expander for Answer
                 with popover("**Deutsch:**", icon="💡", use_container_width=True, help="Click to open"):
                     markdown(f"# {flashcard['Deutsch']}")
@@ -135,8 +142,6 @@ def Quiz(flashcards_df):
                         unsafe_allow_html=True
                     )
 
-                # Call the answer-checking feature
-                check_answer(flashcard, current_index)
         else:
             _, message_col, _ = columns([1, 2, 1])  # Center the no flashcards message
             with message_col:
