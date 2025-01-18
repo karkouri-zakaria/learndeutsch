@@ -28,19 +28,23 @@ class AppSidebar:
         with sidebar:
             write("---")        
             # Display the respective input field based on toggle value
-            text_area("---", "", 
+            verbformen_input = text_area("---", "", 
                 placeholder="📖Wörterbuch...", 
                 key="verbformen_input",
                 height=68, 
                 on_change=lambda: openURL(f"https://www.verbformen.com/?w={session_state.verbformen_input.strip()}") 
                 if session_state.verbformen_input.strip() else None
             )
-            self.user_input = text_area("---", "", placeholder="🔉 Read ...", key="user_input")
-            if self.user_input:
+            self.user_input = text_area(
+                label="🔉 Read ...",
+                placeholder="Enter text for reading",
+                key="user_input"
+            )
+            if self.user_input.strip():
                 try:
-                    audio_path = Path(f"cached_audios/{self.user_input}.mp3")
+                    audio_path = Path(f"cached_audios/{self.user_input.strip()}.mp3")
                     if not audio_path.exists():
-                        audio_path = generate_audio(self.user_input)  # Replace with your actual audio generation logic
+                        audio_path = generate_audio(self.user_input.strip())
                     with open(audio_path, "rb") as audio_file:
                         audio(audio_file, format="audio/mp3", autoplay=True)
                 except Exception as e:
