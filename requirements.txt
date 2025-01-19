@@ -1,6 +1,2 @@
-spacy
 gtts
-openpyxl
-pyspellchecker
-huggingface_hub
 xlsxwriter
