@@ -121,7 +121,7 @@ def Quiz(flashcards_df):
                 # Expander for Answer
                 with popover("**Deutsch:**", icon="💡", use_container_width=True, help="Click to open"):
                     markdown(f"# {flashcard['Deutsch']}")
-                    col1, col2 = columns([7, 1])
+                    col1, col2 = columns([6, 1])
                     # Generate or load cached audio
                     try:
                         audio_path = Path(f"cached_audios/{flashcard['Deutsch']}.mp3")
